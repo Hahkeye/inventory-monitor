@@ -5,21 +5,25 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // get all products
 router.get('/', async (req, res) => {
-  // find all products
-  // be sure to include its associated Category and Tag data
-  res.json(await Product.findAll({
-    include: [Category,Tag]
-  })).status(200);
+  try{
+    res.json(await Product.findAll({
+      include: [Category,Tag]
+    })).status(200);
+  }catch(e){
+    res.json(e).status(400);
+  }
 });
 
 // get one product
 router.get('/:id', async (req, res) => {
-  // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
-  let temp = await Product.findByPk(req.params.id,{
-    include: [Category,Tag]
-  });
-  res.json(temp).status(200);
+  try{
+    let temp = await Product.findByPk(req.params.id,{
+      include: [Category,Tag]
+    });
+    res.json(temp).status(200);
+  }catch(e){
+    res.json(e).status(400);
+  }
 });
 // create new product
 router.post('/', (req, res) => {
@@ -96,12 +100,16 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  let val = await Product.destroy({
-    where: {
-      id: req.params.id
-    }
-  })
-  res.json(val).status(200);
+  try{
+    let val = await Product.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+    res.json(val).status(200);
+  }catch(e){
+    res.json(e).status(200);
+  }
 });
 
 module.exports = router;
